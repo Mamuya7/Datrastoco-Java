@@ -18,7 +18,7 @@ import view_tools.TableBoard;
 import views.LowStock;
 import views.StockEntries;
 
-public class StockController implements ActionListener,CostantValues{
+public class StockController implements ActionListener,CostantValues,Controller{
 	private JButton button;
 	private JComboBox<?> combo;
 	private static Integer qty = 0;
@@ -38,23 +38,16 @@ public class StockController implements ActionListener,CostantValues{
 		if(evt.getSource() == button) {
 			String prod_name = StockEntries.getNamefield().getText();
 			String prod_size = StockEntries.getSizefield().getText();
-			String prod_qty = StockEntries.getQuantityfield().getText();
 			String sizetype = StockEntries.getSizetype().getSelectedItem().toString();
-			if((prod_name.length() == 0) || (prod_size.length() == 0) || (prod_qty.length() == 0)
-					|| (sizetype.length() == 0)) {
+			if((prod_name.length() == 0) || (prod_size.length() == 0) || (sizetype.length() == 0)) {
 				JOptionPane.showMessageDialog(null, "All fields must be field to register a new product");
 			}else {
 				prod_size += sizetype;
-				new Stock(prod_name.toUpperCase(),prod_size,Integer.parseInt(prod_qty));
-				String[] rowData = {prod_name.toUpperCase(),prod_size,prod_qty};
+				new Stock(prod_name.toUpperCase(),prod_size,0);
+				String[] rowData = {prod_name.toUpperCase(),prod_size,""};
 				StockEntries.getStockTableBoard().getBoardTable().addData(rowData);
 				
-				StockEntries.getNamefield().setText("");
-				StockEntries.getSizefield().setText("");
-				StockEntries.getQuantityfield().setText("");
-				StockEntries.getSizetype().setSelectedIndex(0);
-				
-				StockEntries.getQuantityfield().setScreenText("");
+				clearFields();
 			}
 		}else if(evt.getSource() == combo) {
 			qty = (Integer) combo.getSelectedItem();
@@ -95,6 +88,15 @@ public class StockController implements ActionListener,CostantValues{
 
 		ArrayList<ArrayList<Object>> data = Stock.getData();
 		table.fillTable(data);
+	}
+	@Override
+	public void clearFields() {
+		StockEntries.getNamefield().setText("");
+		StockEntries.getSizefield().setText("");
+		StockEntries.getQuantityfield().setText("");
+		StockEntries.getSizetype().setSelectedIndex(0);
+		
+		StockEntries.getQuantityfield().setScreenText("");
 	}
 
 }

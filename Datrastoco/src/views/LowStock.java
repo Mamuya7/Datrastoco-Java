@@ -1,14 +1,11 @@
 package views;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 
 import javax.swing.*;
 
 import controller.StockController;
-import view_tools.CostantValues;
-import view_tools.TableBoard;
+import view_tools.*;
 
 public class LowStock extends JPanel implements CostantValues{
 	private static TableBoard lowStockTableBoard = new TableBoard(lowStock_columns);;

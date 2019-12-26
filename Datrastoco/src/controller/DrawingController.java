@@ -8,7 +8,7 @@ import javax.swing.*;
 import data.Draw;
 import model.DrawModel;
 
-public class DrawingController implements ActionListener {
+public class DrawingController implements ActionListener, Controller {
 
 	public DrawingController(JButton button) {
 		button.addActionListener(this);
@@ -25,5 +25,9 @@ public class DrawingController implements ActionListener {
 					+ "kwa matumizi binafsi umehifadhiwa kikamilifu");
 			draw.clearFields();
 		}
+	}
+
+	@Override
+	public void clearFields() {
 	}
 }

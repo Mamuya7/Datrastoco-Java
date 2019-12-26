@@ -28,4 +28,5 @@ public interface CostantValues {
 	public static final String[] ACCOUNTS = {"No.","Date","Amount"};
 	public static final String[] drawing_columns = {"No.","Drawer","Added Information","Amount"};
 	public static final String[] cash_book_columns = {"No.","Details","Debit","Credit"};
+	public static final String[] debtor_columns = {"No.","Details","Debit","Credit"};
 }

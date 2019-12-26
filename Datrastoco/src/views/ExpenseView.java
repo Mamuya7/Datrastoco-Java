@@ -7,10 +7,14 @@ import javax.swing.*;
 import controller.ExpenseController;
 import view_tools.CostantValues;
 import view_tools.DateSelector;
+import view_tools.Functions;
 import view_tools.JNumberField;
 import view_tools.TableBoard;
+import view_tools.Title;
 
 public class ExpenseView extends JPanel{
+	private static final Title title = new Title("Matumizi Ya Siku");
+	
 	private static final JLabel transaction_label = new JLabel("Transaction");
 	private static final JLabel details_label = new JLabel("Details");
 	private static final JLabel date_label = new JLabel("Date");
@@ -72,7 +76,7 @@ public class ExpenseView extends JPanel{
 				);
 		
 		setLayout(new BorderLayout());
-		add(panel,BorderLayout.NORTH);
+		add(Functions.alignTitleTopCenter(title, panel),BorderLayout.NORTH);
 		add(table,BorderLayout.CENTER);
 	}
 

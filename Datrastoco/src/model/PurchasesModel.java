@@ -14,12 +14,12 @@ public class PurchasesModel implements Models{
 			
 			PreparedStatement prep =  con.prepareStatement(insert_purchase);
 			prep.setInt(1, Product.getInvoice_id());
-			prep.setInt(2, product.getQuantity());
+			prep.setDouble(2, product.getQuantity());
 			prep.setDouble(3, product.getAmount());
 			affected += prep.executeUpdate();
 			
 			prep = con.prepareStatement(increase_stock_quantity);
-			prep.setInt(1, product.getQuantity());
+			prep.setDouble(1, product.getQuantity());
 			prep.setInt(2, Product.getStock_id());
 			affected *= prep.executeUpdate();
 			

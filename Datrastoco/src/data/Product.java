@@ -11,7 +11,7 @@ public class Product {
 	private static int invoice_id = 0;
 	private static String name = null;
 	private static String size = null;
-	private static int quantity = 0;
+	private static double quantity = 0.0;
 	private static double amount = 0;
 	private static double buyprice = 0;
 	private static double sellprice = 0;
@@ -25,7 +25,7 @@ public class Product {
 			String price = SalesEntries.getPricefield().getText();
 			int payment = SalesEntries.getPaymentType().getSelectedIndex();
 
-			Product.fill(name,size,Integer.parseInt(quantity),
+			Product.fill(name,size,quantity,
 					Double.parseDouble(price),payment);
 			Product.classify();
 		}
@@ -59,10 +59,10 @@ public class Product {
 			}
 		}
 	}
-	public static void fill(String name2, String size2, int quanty, double price, int payment) {
+	public static void fill(String name2, String size2, String quantity2, double price, int payment) {
 		setName(name2);
 		setSize(size2);
-		setQuantity(quanty);
+		setQuantity(Double.valueOf(quantity2));
 		setAmount(price);
 		setPaymentType(payment);
 		
@@ -97,10 +97,10 @@ public class Product {
 	public static void setSize(String size) {
 		Product.size = size;
 	}
-	public int getQuantity() {
+	public double getQuantity() {
 		return quantity;
 	}
-	public static void setQuantity(int quantity) {
+	public static void setQuantity(double quantity) {
 		Product.quantity = quantity;
 	}
 	public double getAmount() {

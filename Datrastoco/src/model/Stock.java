@@ -3,8 +3,6 @@ package model;
 import java.sql.*;
 import java.util.ArrayList;
 
-import data.Product;
-
 public class Stock implements Models {
 	private static Connection con = null;
 	private static ArrayList<ArrayList<Object>> data = new ArrayList<>();

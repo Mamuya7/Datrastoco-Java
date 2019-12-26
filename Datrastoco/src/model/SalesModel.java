@@ -47,15 +47,32 @@ public class SalesModel implements Models{
 			}			
 		};
 	}
-
-	public static ArrayList<ArrayList<Object>> getData() {
-		return data;
+	public static void post(double amount) {
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			PreparedStatement ps = con.prepareStatement(insert_cash);
+			ps.setString(1, "Sales");
+			ps.setDouble(2, amount);
+			ps.setDouble(3, 0);
+			int x = ps.executeUpdate();
+			if(x > 0) {
+				JOptionPane.showMessageDialog(null, "Record " + x + " za hela kamili zimerekodiwa");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
 	public void insert() {
 		int id = Product.getInvoice_id();
-		int quantity = product.getQuantity();
+		double quantity = product.getQuantity();
 		Double price = product.getAmount();
 		int stk_id = Product.getStock_id();
 		int payment = product.getPaymentType();
@@ -67,27 +84,18 @@ public class SalesModel implements Models{
 			
 			PreparedStatement ps = con.prepareStatement(insert_sales);
 			ps.setInt(1,id);
-			ps.setInt(2,quantity);
+			ps.setDouble(2,quantity);
 			ps.setDouble(3, price);
 			ps.setInt(4,payment);
 			int effect = ps.executeUpdate();
 			
 			ps = con.prepareStatement(decrease_stock_quantity);
-			ps.setInt(1,quantity);
+			ps.setDouble(1,quantity);
 			ps.setInt(2, stk_id);
-			ps.setInt(3, quantity);
+			ps.setDouble(3, quantity);
 			effect *= ps.executeUpdate();
 			
-			if(product.getPaymentType() == 1) {
-				ps = con.prepareStatement(insert_cash);
-				
-				ps.setString(1, "Sales");
-				ps.setDouble(2, 0);
-				ps.setDouble(3, price);
-				
-				effect *= ps.executeUpdate();
-				
-			}else if(product.getPaymentType() == 2) {
+			if(product.getPaymentType() == 2) {
 				ps = con.prepareStatement(insert_debtor);
 				
 				ps.setString(1, debtor.getName());
@@ -122,6 +130,9 @@ public class SalesModel implements Models{
 		}
 	}
 
+	public static ArrayList<ArrayList<Object>> getData() {
+		return data;
+	}
 	
 	public void setProduct(Product product) {
 		this.product = product;

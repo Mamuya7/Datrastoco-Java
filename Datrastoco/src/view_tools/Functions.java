@@ -1,7 +1,10 @@
 package view_tools;
 
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,5 +29,21 @@ public class Functions {
 		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 		dtm.setRowCount(0);
 		return dtm;
+	}
+	
+	public static JPanel alignTitleTopCenter(JLabel title,JPanel main) {
+		JPanel frame = new JPanel(new BorderLayout());
+		JPanel topInFrame = new JPanel(new BorderLayout());
+		
+		JPanel topCenterInFrame = new JPanel();
+		topCenterInFrame.add(title,BorderLayout.CENTER);
+		
+		topInFrame.add(new JPanel(),BorderLayout.WEST);
+		topInFrame.add(topCenterInFrame,BorderLayout.CENTER);
+		topInFrame.add(new JPanel(),BorderLayout.EAST);
+		
+		frame.add(topInFrame,BorderLayout.NORTH);
+		frame.add(main,BorderLayout.CENTER);
+		return frame;
 	}
 }

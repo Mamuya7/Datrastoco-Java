@@ -8,7 +8,7 @@ public class DrawModel implements Models{
 
 	private Draw draw;
 	private Connection con;
-	int result = 0;
+	int result = 1;
 
 	public DrawModel(Draw draw) {
 		setDraw(draw);
@@ -17,14 +17,31 @@ public class DrawModel implements Models{
 	public void insert() {
 		try {
 			con = DriverManager.getConnection(url,user,password);
+			con.setAutoCommit(false);
 			
 			PreparedStatement ps = con.prepareStatement(insert_drawings);
 			ps.setString(1,draw.getDrawer());
 			ps.setString(2,draw.getDetails());
 			ps.setDouble(3,draw.getAmount());
+			result *= ps.executeUpdate();
 			
-			result = ps.executeUpdate();
+			ps = con.prepareStatement(insert_cash);
+			ps.setString(1,"Drawings");
+			ps.setDouble(2,0);
+			ps.setDouble(3,draw.getAmount());
+			result *= ps.executeUpdate();
+			
+			if(isInserted()) {
+				con.commit();
+			}
+			
 		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}finally {
 			try {
 				con.close();

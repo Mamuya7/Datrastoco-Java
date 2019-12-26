@@ -16,7 +16,7 @@ public interface Models{
 	public static final String account = " (date,amount) values (?,?)";
 	public static final String insert_drawings = "insert into drawings (drawer,details,amount)"
 			+ " values (?,?,?)";
-	public static final String insert_cash = "insert into cashbook (transaction,credit,debit)"
+	public static final String insert_cash = "insert into cashbook (transaction,debit,credit)"
 			+ " values (?,?,?)";
 	public static final String insert_debtor = "insert into debtor (name,transaction,debit,credit)"
 			+ " values (?,?,?,?)";
@@ -37,9 +37,10 @@ public interface Models{
 	public static final String purchases_data = "select stock.prod_name,stock.prod_size,"
 			+ "daily_purchases.quantity,daily_purchases.price from stock inner join stock_invoice "
 			+ "on stock.id = stock_invoice.stck_inv_id inner join daily_purchases on "
-			+ "stock_invoice.stck_inv_id = daily_purchases.stock_invoice_id";
+			+ "stock_invoice.stck_inv_id = daily_purchases.stock_invoice_id where daily_purchases.date like '";
 
-	public static final String sales_account = "";
+	public static final String cash_sales = "select daily_sales.price from daily_sales where "
+			+ "daily_sales.payment = 'cash' and daily_sales.date like '";
 	public static final String purchase_account = "";
 	
 	public static final String sales_total = "select price from daily_sales where date like '";

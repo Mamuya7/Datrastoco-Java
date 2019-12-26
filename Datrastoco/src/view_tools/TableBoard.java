@@ -6,7 +6,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.function.Function;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;

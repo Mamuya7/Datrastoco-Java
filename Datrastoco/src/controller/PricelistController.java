@@ -12,7 +12,7 @@ import model.PriceList;
 import model.Search;
 import views.PricelistEntries;
 
-public class PricelistController implements ActionListener {
+public class PricelistController implements ActionListener,Controller {
 	
 	public PricelistController(JButton save) {
 		save.addActionListener(this);
@@ -33,10 +33,6 @@ public class PricelistController implements ActionListener {
 		String[] rowData = {name,size,String.valueOf(buying),String.valueOf(selling)};
 		PricelistEntries.getTableBoard().getBoardTable().addData(rowData);
 		
-		PricelistEntries.getNamefield().setText("");
-		PricelistEntries.getSizefield().setText("");
-		PricelistEntries.getBuyingPricefield().setText("");
-		PricelistEntries.getSellingPricefield().setText("");
 	}
 
 	public static void loadPricelist() {
@@ -49,6 +45,18 @@ public class PricelistController implements ActionListener {
 		}
 		PricelistEntries.getTableBoard().getBoardTable().fillTable(Search.getTable_data());
 		PricelistEntries.getTableBoard().setBoardTableAdapter(Search.getTable_data());
+	}
+
+	@Override
+	public void clearFields() {
+		PricelistEntries.getNamefield().setText("");
+		PricelistEntries.getSizefield().setText("");
+		PricelistEntries.getBuyingPricefield().setText("");
+		PricelistEntries.getSellingPricefield().setText("");
+		
+
+		PricelistEntries.getBuyingPricefield().setScreenText("");
+		PricelistEntries.getSellingPricefield().setScreenText("");
 	}
 
 }

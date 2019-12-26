@@ -6,12 +6,11 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import controller.SalesController;
-import view_tools.CostantValues;
-import view_tools.JNumberField;
-import view_tools.JSearchField;
-import view_tools.TableBoard;
+import view_tools.*;
 
 public class SalesEntries extends JPanel {
+	private static final Title title = new Title("Mauzo Ya Siku");
+	
 	private static final JLabel name = new JLabel("Product Name");
 	private static final JLabel price = new JLabel("Product Price");
 	private static final JLabel quantity = new JLabel("Product Quantity");
@@ -28,11 +27,11 @@ public class SalesEntries extends JPanel {
 	private static JNumberField quantityfield = new JNumberField();
 	
 	private static JButton save = new JButton("SAVE");
+	private static JButton post = new JButton("POST");
 	
 	private static JRadioButton defaultprice = new JRadioButton();
 	private static JRadioButton discountprice = new JRadioButton();
 	private static final ButtonGroup pricetype = new ButtonGroup();
-	private static final JPanel priceOptions = new JPanel();
 	
 	private static JComboBox<String> paymentType = new JComboBox<String>();
 	
@@ -42,14 +41,96 @@ public class SalesEntries extends JPanel {
 	public SalesEntries() {
 		super();
 
-		new SalesController(save,defaultprice,discountprice);
+		new SalesController(save,post,defaultprice,discountprice);
 		
 		pricetype.add(defaultprice);
 		pricetype.add(discountprice);
 		paymentCombo();
 		
-		JScrollPane scrollNames = new JScrollPane(namesearch);
-		JScrollPane scrollSizes = new JScrollPane(sizesearch);
+		JPanel entries = new JPanel();
+		entries = entriesPanel();
+		
+		JPanel topPanel = Functions.alignTitleTopCenter(title, entries);
+		
+		JPanel footPanel = new JPanel(new BorderLayout());
+		footPanel.add(post,BorderLayout.EAST);
+		
+		setLayout(new BorderLayout());
+		add(topPanel,BorderLayout.NORTH);
+		add(salesTableBoard,BorderLayout.CENTER);
+		add(footPanel,BorderLayout.SOUTH);
+	}
+	
+	private JPanel entriesPanel() {
+	
+	JPanel entries = new JPanel();
+	GroupLayout gl = new GroupLayout(entries);
+	entries.setLayout(gl);
+
+	JScrollPane scrollNames = new JScrollPane(namesearch);
+	JScrollPane scrollSizes = new JScrollPane(sizesearch);
+	
+	JPanel priceOptions = new JPanel();
+	priceOptions = priceOptionPanel();
+	
+	gl.setAutoCreateContainerGaps(true);
+	gl.setAutoCreateGaps(true);
+	
+	gl.setHorizontalGroup(
+			gl.createSequentialGroup()
+				.addGroup(
+						gl.createParallelGroup()
+						.addComponent(name)
+						.addComponent(namefield)
+						.addComponent(scrollNames))
+				.addGroup(
+						gl.createParallelGroup()
+						.addComponent(size)
+						.addComponent(sizefield)
+						.addComponent(scrollSizes))
+				.addGroup(
+						gl.createParallelGroup()
+						.addComponent(quantity)
+						.addComponent(quantityfield))
+				.addGroup(
+						gl.createParallelGroup()
+						.addComponent(price)
+						.addComponent(pricefield)
+						.addComponent(priceOptions))
+				.addGroup(
+						gl.createParallelGroup()
+						.addComponent(paymentType)
+						.addComponent(save))
+			);
+	gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+					gl.createParallelGroup()
+					.addComponent(name)
+					.addComponent(size)
+					.addComponent(quantity)
+					.addComponent(price)
+					)
+			.addGroup(
+					gl.createParallelGroup()
+					.addComponent(namefield)
+					.addComponent(sizefield)
+					.addComponent(quantityfield)
+					.addComponent(pricefield)
+					.addComponent(paymentType))
+			.addGroup(
+					gl.createParallelGroup()
+					.addComponent(scrollNames)
+					.addComponent(scrollSizes)
+					.addComponent(priceOptions)
+					.addComponent(save)
+					)
+				
+			);
+		return entries;
+	}
+	private JPanel priceOptionPanel() {
+		JPanel priceOptions = new JPanel();
 		
 		GroupLayout gl2 = new GroupLayout(priceOptions);
 		priceOptions.setLayout(gl2);
@@ -76,68 +157,7 @@ public class SalesEntries extends JPanel {
 						.addComponent(discountprice)
 						.addComponent(discountlabel))
 				);
-		JPanel entries = new JPanel();
-		GroupLayout gl = new GroupLayout(entries);
-		entries.setLayout(gl);
-		
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		gl.setHorizontalGroup(
-				gl.createSequentialGroup()
-					.addGroup(
-							gl.createParallelGroup()
-							.addComponent(name)
-							.addComponent(namefield)
-							.addComponent(scrollNames))
-					.addGroup(
-							gl.createParallelGroup()
-							.addComponent(size)
-							.addComponent(sizefield)
-							.addComponent(scrollSizes))
-					.addGroup(
-							gl.createParallelGroup()
-							.addComponent(quantity)
-							.addComponent(quantityfield))
-					.addGroup(
-							gl.createParallelGroup()
-							.addComponent(price)
-							.addComponent(pricefield)
-							.addComponent(priceOptions))
-					.addGroup(
-							gl.createParallelGroup()
-							.addComponent(paymentType)
-							.addComponent(save))
-				);
-		gl.setVerticalGroup(
-				gl.createSequentialGroup()
-				.addGroup(
-						gl.createParallelGroup()
-						.addComponent(name)
-						.addComponent(size)
-						.addComponent(quantity)
-						.addComponent(price)
-						)
-				.addGroup(
-						gl.createParallelGroup()
-						.addComponent(namefield)
-						.addComponent(sizefield)
-						.addComponent(quantityfield)
-						.addComponent(pricefield)
-						.addComponent(paymentType))
-				.addGroup(
-						gl.createParallelGroup()
-						.addComponent(scrollNames)
-						.addComponent(scrollSizes)
-						.addComponent(priceOptions)
-						.addComponent(save)
-						)
-					
-				);
-		
-		setLayout(new BorderLayout());
-		add(entries,BorderLayout.NORTH);
-		add(salesTableBoard,BorderLayout.CENTER);
+		return priceOptions;
 	}
 
 	private void paymentCombo() {
@@ -202,5 +222,21 @@ public class SalesEntries extends JPanel {
 
 	public static void setPaymentType(JComboBox<String> paymentType) {
 		SalesEntries.paymentType = paymentType;
+	}
+
+	public static JButton getPost() {
+		return post;
+	}
+
+	public static void setPost(JButton post) {
+		SalesEntries.post = post;
+	}
+
+	public static JButton getSave() {
+		return save;
+	}
+
+	public static void setSave(JButton save) {
+		SalesEntries.save = save;
 	}
 }

@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
+import dashboard.Dashboard;
 import dashboard.Utility;
 import data.Product;
 import model.Models;
@@ -57,7 +58,7 @@ public class PurchasesController implements ActionListener {
 	}
 	
 	public static void load_purchases() {
-		Utility.database_thread = new Thread(Search.fetch(Models.purchases_data));
+		Utility.database_thread = new Thread(Search.fetch(Models.purchases_data + Dashboard.getTheDate()+"%'"));
 		Utility.database_thread.start();
 		try {
 			Utility.database_thread.join();
@@ -70,11 +71,14 @@ public class PurchasesController implements ActionListener {
 	}
 	private void clean_fields() {
 		PurchasesEntries.getNamefield().setText("");
-		PurchasesEntries.getPricefield().setText(0);
-		PurchasesEntries.getQuantityfield().setText(0);
+		PurchasesEntries.getPricefield().setText("");
+		PurchasesEntries.getQuantityfield().setText("");
 		PurchasesEntries.getSizefield().setText("");
 		PurchasesEntries.getDiscountprice().setSelected(true);
 		PurchasesEntries.getPricefield().setEditable(true);
+		
+		PurchasesEntries.getPricefield().setScreenText("");
+		PurchasesEntries.getQuantityfield().setScreenText("");
 	}
 	
 
