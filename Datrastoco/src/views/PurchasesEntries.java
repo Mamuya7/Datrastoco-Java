@@ -6,9 +6,11 @@ import javax.swing.*;
 
 import controller.PurchasesController;
 import controller.SalesController;
+import controller.SearchController;
 import view_tools.CostantValues;
 import view_tools.JNumberField;
 import view_tools.JSearchField;
+import view_tools.JSearchList;
 import view_tools.TableBoard;
 
 public class PurchasesEntries extends JPanel {
@@ -19,11 +21,11 @@ public class PurchasesEntries extends JPanel {
 	private static final JLabel defaultlabel = new JLabel("Default Price");
 	private static final JLabel discountlabel = new JLabel("Discount Price");
 	
-	private static JList<String> namesearch = new JList<String>();
-	private static JList<String> sizesearch = new JList<String>();
+	private static JSearchList namesearch = new JSearchList();
+	private static JSearchList sizesearch = new JSearchList();
 	
 	private static JSearchField namefield = new JSearchField(namesearch);
-	private static JSearchField sizefield =  new JSearchField(namefield,sizesearch);
+	private static JSearchField sizefield =  new JSearchField(sizesearch);
 	private static JNumberField pricefield = new JNumberField();
 	private static JNumberField quantityfield = new JNumberField();
 	
@@ -42,6 +44,11 @@ public class PurchasesEntries extends JPanel {
 		
 		pricetype.add(defaultprice);
 		pricetype.add(discountprice);
+		
+		sizesearch.setSearchField(sizefield);
+		namesearch.setListAdapter(SearchController.fetchProductAdapter());
+		namesearch.setSearchField(namefield);
+		namesearch.setRefSearchList(sizesearch);
 		
 		JScrollPane scrollNames = new JScrollPane(namesearch);
 		JScrollPane scrollSizes = new JScrollPane(sizesearch);

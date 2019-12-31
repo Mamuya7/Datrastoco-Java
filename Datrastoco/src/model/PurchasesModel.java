@@ -2,25 +2,25 @@ package model;
 
 import java.sql.*;
 
-import data.Product;
+import data.ProductData;
 
 public class PurchasesModel implements Models{
 	static Connection con;
 	private static int affected = 0;
-	public PurchasesModel(Product product) {
+	public PurchasesModel(ProductData product) {
 		try {
 			con = DriverManager.getConnection(url, user, password);
 			con.setAutoCommit(false);
 			
 			PreparedStatement prep =  con.prepareStatement(insert_purchase);
-			prep.setInt(1, Product.getInvoice_id());
+			prep.setInt(1, ProductData.getInvoice_id());
 			prep.setDouble(2, product.getQuantity());
 			prep.setDouble(3, product.getAmount());
 			affected += prep.executeUpdate();
 			
 			prep = con.prepareStatement(increase_stock_quantity);
 			prep.setDouble(1, product.getQuantity());
-			prep.setInt(2, Product.getStock_id());
+			prep.setInt(2, ProductData.getStock_id());
 			affected *= prep.executeUpdate();
 			
 			con.commit();
@@ -49,8 +49,9 @@ public class PurchasesModel implements Models{
 	}
 
 	@Override
-	public void insert() {
-		// TODO Auto-generated method stub
-		
+	public Runnable query() {
+		return ()->{
+			
+		};
 	}
 }

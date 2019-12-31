@@ -4,58 +4,56 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 
-import data.Product;
+import dashboard.Utility;
+import data.ProductData;
+import model.Models;
 import model.Search;
 
 public class SearchController {
 	private static ArrayList<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>();
-	private static ArrayList<String>column = new ArrayList<>();
+	private static ArrayList<Object> column = new ArrayList<>();
 	
 	public static DefaultListModel<String> filterListWith(String letters) {
 		DefaultListModel<String> result = new DefaultListModel<String>();
 		
-		for(String data: column) {
-			if(data.startsWith(letters.toUpperCase())) {
-				result.addElement(data);
+		for(Object data: column) {
+			if(data.toString().startsWith(letters.toUpperCase())) {
+				result.addElement((String) data);
 			}
 		}
 		return result;
 	}
 	public static DefaultListModel<String> getCurrentList(){
 		DefaultListModel<String> currentList = new DefaultListModel<String>();
-		for(String data: column) {
-			currentList.addElement(data);
+		for(Object data: column) {
+			currentList.addElement((String) data);
 		}
 		return currentList;
 	}
-	public static void fetchListOf(String listName) {
-		if(listName == null) {
-			setColumn(filterByColumn(1));
-		}else {
-			setColumn(filterByColumn(2,listName));
+	public static ArrayList<ArrayList<Object>> fetchProductAdapter() {
+		Search search = new Search();
+		try {
+			Thread thread = new Thread(search.fetch(Models.product_names));
+			thread.start();
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		return search.getTable_data();
 	}
-	public static void retrieveAll() {
-		Search.fetchProduct_stock_list();
-		setList(Search.getProduct_Stock_List());
-	}
-	private static ArrayList<String> filterByColumn(int index) {
-		ArrayList<String> value = new ArrayList<String>();
-		for (ArrayList<Object> row:getList()) {
-			value.add((String) row.get(index));
+	public static ArrayList<ArrayList<Object>> fetchUsersAdapter() {
+		Search search = new Search();
+		try {
+			Thread thread = new Thread(search.fetch(Models.user_names));
+			thread.start();
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		return value;
+		return search.getTable_data();
 	}
-	private static ArrayList<String> filterByColumn(int index, String listName) {
-		ArrayList<String> value = new ArrayList<String>();
-		Product.products = new ArrayList<ArrayList<Object>>();
-		for (ArrayList<Object> row:getList()) {
-			if(((String) row.get(1)).equalsIgnoreCase(listName)) {
-				value.add((String) row.get(index));
-				Product.products.add(row);
-			}
-		}
-		return value;
+	public static void loadProductsData() {
+		Utility.queryDatabase(Search.fetchStock());
 	}
 	public static ArrayList<ArrayList<Object>> getList() {
 		return list;
@@ -64,11 +62,11 @@ public class SearchController {
 	public static void setList(ArrayList<ArrayList<Object>> arrayList) {
 		SearchController.list = arrayList;
 	}
-	public static ArrayList<String> getColumn() {
+	public static ArrayList<Object> getColumn() {
 		return column;
 	}
-	public static void setColumn(ArrayList<String> column) {
-		SearchController.column = column;
+	public static void setColumn(ArrayList<Object> arrayList) {
+		SearchController.column = arrayList;
 	}
 	
 	

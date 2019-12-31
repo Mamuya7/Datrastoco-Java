@@ -3,11 +3,11 @@ package model;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Stock implements Models {
+public class StockModel implements Models {
 	private static Connection con = null;
 	private static ArrayList<ArrayList<Object>> data = new ArrayList<>();
 	
-	public Stock() {
+	public StockModel() {
 		String query = "select * from stock";
 		ResultSet rs = null;
 		try {
@@ -33,7 +33,7 @@ public class Stock implements Models {
 			}
 		}
 	}
-	public Stock(String name,String size,int quantity) {
+	public StockModel(String name,String size,int quantity) {
 		String query = "insert into stock (prod_name,prod_size,prod_quantity) values (?,?,?)";
 		try {
 			con = DriverManager.getConnection(url,user,password);
@@ -127,9 +127,10 @@ public class Stock implements Models {
 		return data;
 	}
 	@Override
-	public void insert() {
-		// TODO Auto-generated method stub
-		
+	public Runnable query() {
+		return ()->{
+			
+		};
 	}
 
 }

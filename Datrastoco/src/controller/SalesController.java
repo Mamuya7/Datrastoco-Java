@@ -8,13 +8,13 @@ import javax.swing.*;
 import dashboard.Dashboard;
 import dashboard.Utility;
 import data.Debtor;
-import data.Product;
+import data.SalesData;
 import model.Models;
 import model.SalesModel;
 import model.Search;
 import views.SalesEntries;
 
-public class SalesController implements ActionListener,Controller{
+public class SalesController implements ActionListener{
 	private static int id = 0;
 	public SalesController(JButton button, JButton post, JRadioButton defaultprice, JRadioButton discountprice) {
 		button.addActionListener(this);
@@ -34,30 +34,34 @@ public class SalesController implements ActionListener,Controller{
 			SalesModel.post(value);
 		}
 		if(avt.getSource() == SalesEntries.getSave()) {
-			Product product = new Product(1);
+			SalesData salesdata = new SalesData();
+			SalesModel salesmodel;
 			
-			if(product.getPaymentType() == 0) {
+			if(salesdata.getPayment() == 0) {
 				JOptionPane.showMessageDialog(null,"Chagua aina ya malipo");
 			}else {
-				SalesModel salesmodel;
-				if(product.getPaymentType() == 2) {
-					Debtor debtor = new Debtor(
-							JOptionPane.showInputDialog("Weka jina la mkopaji"),
-							"Sales of " + product.getName());
-					salesmodel = new SalesModel(product,debtor);
+				if(salesdata.getPayment() == 2) {
+					Debtor debtor = new Debtor(salesdata);
+					salesmodel = new SalesModel(debtor);
 				}else {
-					salesmodel = new SalesModel(product);
+					salesmodel = new SalesModel(salesdata);
 				}
 				
-				salesmodel.insert();
+				try {
+					Thread thread =  new Thread(salesmodel.query());
+					thread.start();
+					thread.join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 				
-				String[] rowData = {product.getName(),
-						product.getSize(),
-						String.valueOf(product.getQuantity()),
-						String.valueOf(product.getAmount())};
+				String[] rowData = {salesdata.getProdName(),
+						salesdata.getProdSize(),
+						String.valueOf(salesdata.getQuantity()),
+						String.valueOf(salesdata.getAmount())};
 				
 				SalesEntries.getSalesTableBoard().getBoardTable().addData(rowData);
-				clearFields();
+				salesdata.clearFields();
 			}
 		}
 		
@@ -80,7 +84,6 @@ public class SalesController implements ActionListener,Controller{
 	public static void setId(int id) {
 		SalesController.id = id;
 	}
-	@Override
 	public void clearFields() {
 		
 		SalesEntries.getNamefield().setText("");

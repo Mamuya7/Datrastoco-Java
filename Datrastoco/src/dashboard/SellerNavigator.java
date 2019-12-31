@@ -46,6 +46,7 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 		Dashboard.getCard().add(POST_VIEW, new AccountsView());
 		Dashboard.getCard().add(DRAWINGVIEW, new DrawingView());
 		Dashboard.getCard().add(CASHBOOKVIEW,new CashBookView());
+		Dashboard.getCard().add(DEBTORSVIEW,new DebtorsView());
 	}
 	
 	private JMenu stockItems() {

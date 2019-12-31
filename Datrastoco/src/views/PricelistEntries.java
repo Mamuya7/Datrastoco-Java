@@ -5,9 +5,11 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 
 import controller.PricelistController;
+import controller.SearchController;
 import view_tools.CostantValues;
 import view_tools.JNumberField;
 import view_tools.JSearchField;
+import view_tools.JSearchList;
 import view_tools.TableBoard;
 
 public class PricelistEntries extends JPanel implements CostantValues{
@@ -16,11 +18,11 @@ public class PricelistEntries extends JPanel implements CostantValues{
 	private static final JLabel buyingprice = new JLabel("Buying Price");
 	private static final JLabel sellingprice = new JLabel("Selling Price");
 	
-	private static JList<String> namesearch = new JList<String>();
-	private static JList<String> sizesearch = new JList<String>();
+	private static JSearchList namesearch = new JSearchList();
+	private static JSearchList sizesearch = new JSearchList();
 	
 	private static JSearchField namefield = new JSearchField(namesearch);
-	private static JSearchField sizefield =  new JSearchField(namefield,sizesearch);
+	private static JSearchField sizefield =  new JSearchField(sizesearch);
 	private static JNumberField buyingPricefield = new JNumberField();
 	private static JNumberField sellingPricefield = new JNumberField();
 	
@@ -31,6 +33,11 @@ public class PricelistEntries extends JPanel implements CostantValues{
 	public PricelistEntries() {
 		super();
 		new PricelistController(save);		
+		
+		sizesearch.setSearchField(sizefield);
+		namesearch.setListAdapter(SearchController.fetchProductAdapter());
+		namesearch.setSearchField(namefield);
+		namesearch.setRefSearchList(sizesearch);
 		
 		JScrollPane scrollNames = new JScrollPane(namesearch);
 		JScrollPane scrollSizes = new JScrollPane(sizesearch);

@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import controller.SalesController;
+import controller.SearchController;
 import view_tools.*;
 
 public class SalesEntries extends JPanel {
@@ -18,11 +19,11 @@ public class SalesEntries extends JPanel {
 	private static final JLabel defaultlabel = new JLabel("Default Price");
 	private static final JLabel discountlabel = new JLabel("Discount Price");
 
-	private static JList<String> namesearch = new JList<String>();
-	private static JList<String> sizesearch = new JList<String>();
+	private static JSearchList sizesearch = new JSearchList();
+	private static JSearchList namesearch = new JSearchList(sizesearch);
 	
 	private static JSearchField namefield = new JSearchField(namesearch);
-	private static JSearchField sizefield =  new JSearchField(namefield,sizesearch);
+	private static JSearchField sizefield =  new JSearchField(sizesearch);
 	private static JNumberField pricefield = new JNumberField();
 	private static JNumberField quantityfield = new JNumberField();
 	
@@ -35,7 +36,6 @@ public class SalesEntries extends JPanel {
 	
 	private static JComboBox<String> paymentType = new JComboBox<String>();
 	
-
 	private static TableBoard salesTableBoard = new TableBoard(CostantValues.sales_columns);
 	
 	public SalesEntries() {
@@ -46,6 +46,10 @@ public class SalesEntries extends JPanel {
 		pricetype.add(defaultprice);
 		pricetype.add(discountprice);
 		paymentCombo();
+		
+		sizesearch.setSearchField(sizefield);
+		namesearch.setListAdapter(SearchController.fetchProductAdapter());
+		namesearch.setSearchField(namefield);
 		
 		JPanel entries = new JPanel();
 		entries = entriesPanel();

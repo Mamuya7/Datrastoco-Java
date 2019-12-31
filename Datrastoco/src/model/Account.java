@@ -32,8 +32,9 @@ public class Account implements Models {
 	}
 
 	@Override
-	public void insert() {
-		// TODO Auto-generated method stub
-		
+	public Runnable query() {
+		return ()->{
+			
+		};
 	}
 }

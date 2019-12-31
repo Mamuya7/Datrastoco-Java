@@ -14,41 +14,43 @@ public class DrawModel implements Models{
 		setDraw(draw);
 	}
 
-	public void insert() {
-		try {
-			con = DriverManager.getConnection(url,user,password);
-			con.setAutoCommit(false);
-			
-			PreparedStatement ps = con.prepareStatement(insert_drawings);
-			ps.setString(1,draw.getDrawer());
-			ps.setString(2,draw.getDetails());
-			ps.setDouble(3,draw.getAmount());
-			result *= ps.executeUpdate();
-			
-			ps = con.prepareStatement(insert_cash);
-			ps.setString(1,"Drawings");
-			ps.setDouble(2,0);
-			ps.setDouble(3,draw.getAmount());
-			result *= ps.executeUpdate();
-			
-			if(isInserted()) {
-				con.commit();
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public Runnable query() {
+		return ()->{
 			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}finally {
-			try {
-				con.close();
+				con = DriverManager.getConnection(url,user,password);
+				con.setAutoCommit(false);
+				
+				PreparedStatement ps = con.prepareStatement(insert_drawings);
+				ps.setString(1,draw.getDrawer());
+				ps.setString(2,draw.getDetails());
+				ps.setDouble(3,draw.getAmount());
+				result *= ps.executeUpdate();
+				
+				ps = con.prepareStatement(insert_cash);
+				ps.setString(1,"Drawings");
+				ps.setDouble(2,0);
+				ps.setDouble(3,draw.getAmount());
+				result *= ps.executeUpdate();
+				
+				if(isInserted()) {
+					con.commit();
+				}
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
-		}
+		};
 	}
 	
 	public boolean isInserted() {

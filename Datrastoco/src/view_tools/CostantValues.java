@@ -13,6 +13,7 @@ public interface CostantValues {
 	public final static String DRAWINGVIEW = "DRAWINGVIEW";
 	public final static String LOWSTOCK_TABLE_BOARD = "LOWSTOCK_TABLE_BOARD";
 	public final static String CASHBOOKVIEW = "CASHBOOKVIEW";
+	public final static String DEBTORSVIEW = "DEBTORVIEW";
 	
 	public static final String purchase_list = "Purchases Ledger";
 	public static final String sales_list = "Sales Ledger";

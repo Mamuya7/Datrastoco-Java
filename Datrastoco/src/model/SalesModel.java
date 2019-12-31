@@ -7,21 +7,22 @@ import javax.swing.JOptionPane;
 
 import dashboard.Dashboard;
 import data.Debtor;
-import data.Product;
+import data.ProductData;
+import data.SalesData;
 
 public class SalesModel implements Models{
 	private static Connection con = null;
 	private static ArrayList<ArrayList<Object>> data = new ArrayList<>();
 	private Debtor debtor;
-	private Product product;
+	private ProductData product;
+	private SalesData salesdata;
 
-	public SalesModel(Product product) {
-		setProduct(product);
+	public SalesModel(Debtor debtor2) {
+		setDebtor(debtor2);
 	}
 
-	public SalesModel(Product product, Debtor debtor) {
-		setDebtor(debtor);
-		setProduct(product);
+	public SalesModel(SalesData salesdata) {
+		this.setSalesdata(salesdata);
 	}
 
 	public static Runnable loadSales() {
@@ -70,74 +71,78 @@ public class SalesModel implements Models{
 	}
 
 	@Override
-	public void insert() {
-		int id = Product.getInvoice_id();
-		double quantity = product.getQuantity();
-		Double price = product.getAmount();
-		int stk_id = Product.getStock_id();
-		int payment = product.getPaymentType();
-		
-		
-		try {
-			con = DriverManager.getConnection(url,user,password);
-			con.setAutoCommit(false);
+	public Runnable query() {
+		return ()->{
 			
-			PreparedStatement ps = con.prepareStatement(insert_sales);
-			ps.setInt(1,id);
-			ps.setDouble(2,quantity);
-			ps.setDouble(3, price);
-			ps.setInt(4,payment);
-			int effect = ps.executeUpdate();
-			
-			ps = con.prepareStatement(decrease_stock_quantity);
-			ps.setDouble(1,quantity);
-			ps.setInt(2, stk_id);
-			ps.setDouble(3, quantity);
-			effect *= ps.executeUpdate();
-			
-			if(product.getPaymentType() == 2) {
-				ps = con.prepareStatement(insert_debtor);
+			try {
+				con = DriverManager.getConnection(url,user,password);
+				con.setAutoCommit(false);
 				
-				ps.setString(1, debtor.getName());
-				ps.setString(2, debtor.getTransaction());
-				ps.setDouble(3, price);
-				ps.setDouble(4,0);
+				PreparedStatement ps = con.prepareStatement(insert_sales);
+				ps.setInt(1,salesdata.getProdId());
+				ps.setDouble(2,salesdata.getQuantity());
+				ps.setDouble(3, salesdata.getAmount());
+				ps.setInt(4,salesdata.getPayment());
+				int effect = ps.executeUpdate();
 				
+				ps = con.prepareStatement(decrease_stock_quantity);
+				ps.setDouble(1,salesdata.getQuantity());
+				ps.setInt(2, salesdata.getProdId());
+				ps.setDouble(3, salesdata.getQuantity());
 				effect *= ps.executeUpdate();
-			}
-			
-			if(effect == 0) {
-				JOptionPane.showMessageDialog(null, "Idadi ya bidhaa unayojaribu "
-						+ "kuuza ni nyingi kuliko zilizopo");
-				con.rollback();
-			}else {
-				con.commit();
-			}
-			
-		} catch (SQLException e) {
-			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		}finally {
-			try {
-				con.close();
+				
+				if(salesdata.getPayment() == 2) {
+					ps = con.prepareStatement(insert_debtor);
+					
+					ps.setString(1, debtor.getName());
+					ps.setString(2, debtor.getTransaction());
+					ps.setDouble(3, debtor.getSalesdata().getAmount());
+					ps.setDouble(4,0);
+					
+					effect *= ps.executeUpdate();
+				}
+				
+				if(effect == 0) {
+					JOptionPane.showMessageDialog(null, "Idadi ya bidhaa unayojaribu "
+							+ "kuuza ni nyingi kuliko zilizopo");
+					con.rollback();
+				}else {
+					con.commit();
+				}
+				
 			} catch (SQLException e) {
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 				e.printStackTrace();
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
-		}
+		};
 	}
 
 	public static ArrayList<ArrayList<Object>> getData() {
 		return data;
 	}
 	
-	public void setProduct(Product product) {
+	public void setProduct(ProductData product) {
 		this.product = product;
 	}
 	public void setDebtor(Debtor debtor) {
 		this.debtor = debtor;
+	}
+
+	public SalesData getSalesdata() {
+		return salesdata;
+	}
+
+	public void setSalesdata(SalesData salesdata) {
+		this.salesdata = salesdata;
 	}
 }

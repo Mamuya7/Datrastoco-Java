@@ -2,42 +2,49 @@ package model;
 
 import java.sql.*;
 import java.util.ArrayList;
+import data.ProductData;
+import database_contract.Database.Stock;
 
 public class Search implements Models{
-	private static ArrayList<ArrayList<Object>> product_stock_list;
-	private static ArrayList<ArrayList<Object>> table_data;
+	private ArrayList<ArrayList<Object>> table_data;
 	private static Double total;
 	private static Connection con = null;
 	
-	public static void fetchProduct_stock_list(){
-		product_stock_list = new ArrayList<ArrayList<Object>>();
-		
-		try {
-			con = DriverManager.getConnection(url,user,password);
-			Statement stmnt = con.createStatement();
-			ResultSet rs = stmnt.executeQuery(product_details);
-			while(rs.next()) {
-				ResultSetMetaData rsm = rs.getMetaData();
-				int col = rsm.getColumnCount();
-				ArrayList<Object> row = new ArrayList<Object>();
-				for(int i = 1; i <= col; i++) {
-					row.add(String.valueOf(rs.getObject(i)));
-				}
-				product_stock_list.add(row);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
+	public static Runnable fetchStock(){
+		return () ->{
+			
 			try {
-				con.close();
+				con = DriverManager.getConnection(url,user,password);
+				Statement stmnt = con.createStatement();
+				ResultSet rs = stmnt.executeQuery(fetch_stock);
+				
+				ArrayList<ProductData> product = new ArrayList<ProductData>();
+				while(rs.next()) {
+					ProductData productData = new ProductData(
+							rs.getInt(Stock.PRODUCT_ID),
+							rs.getString(Stock.PRODUCT_NAME),
+							rs.getString(Stock.PRODUCT_SIZE),
+							rs.getDouble(Stock.PRODUCT_QUANTITY),
+							rs.getDouble(Stock.BUYING_PRICE),
+							rs.getDouble(Stock.SELLING_PRICE),
+							rs.getDouble(Stock.AMOUNT)
+							);
+					product.add(productData);
+				}
+				ProductData.setProduct(product);
 			} catch (SQLException e) {
 				e.printStackTrace();
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
-		}
-		//setProduct_Stock_List(product_stock_list);
+		};
 	}
 	
-	public static Runnable fetch(String query) {
+	public Runnable fetch(String query) {
 		return ()->{
 			try {
 				con = DriverManager.getConnection(url, user, password);
@@ -121,20 +128,13 @@ public class Search implements Models{
 		
 		return data;
 	}
-	public static ArrayList<ArrayList<Object>> getProduct_Stock_List() {
-		return product_stock_list;
-	}
 
-	public static void setProduct_Stock_List(ArrayList<ArrayList<Object>> list) {
-		Search.product_stock_list = list;
-	}
-
-	public static ArrayList<ArrayList<Object>> getTable_data() {
+	public ArrayList<ArrayList<Object>> getTable_data() {
 		return table_data;
 	}
 
-	public static void setTable_data(ArrayList<ArrayList<Object>> table_data) {
-		Search.table_data = table_data;
+	public void setTable_data(ArrayList<ArrayList<Object>> table_data) {
+		this.table_data = table_data;
 	}
 
 	public static Double getTotal() {
@@ -146,8 +146,9 @@ public class Search implements Models{
 	}
 
 	@Override
-	public void insert() {
-		// TODO Auto-generated method stub
-		
+	public Runnable query() {
+		return ()->{
+			
+		};
 	}
 }

@@ -11,14 +11,14 @@ import javax.swing.table.DefaultTableModel;
 
 import dashboard.Utility;
 import model.Search;
-import model.Stock;
+import model.StockModel;
 import view_tools.CostantValues;
 import view_tools.Table;
 import view_tools.TableBoard;
 import views.LowStock;
 import views.StockEntries;
 
-public class StockController implements ActionListener,CostantValues,Controller{
+public class StockController implements ActionListener,CostantValues{
 	private JButton button;
 	private JComboBox<?> combo;
 	private static Integer qty = 0;
@@ -43,7 +43,7 @@ public class StockController implements ActionListener,CostantValues,Controller{
 				JOptionPane.showMessageDialog(null, "All fields must be field to register a new product");
 			}else {
 				prod_size += sizetype;
-				new Stock(prod_name.toUpperCase(),prod_size,0);
+				new StockModel(prod_name.toUpperCase(),prod_size,0);
 				String[] rowData = {prod_name.toUpperCase(),prod_size,""};
 				StockEntries.getStockTableBoard().getBoardTable().addData(rowData);
 				
@@ -57,18 +57,18 @@ public class StockController implements ActionListener,CostantValues,Controller{
 	}
 	
 	public static void initiateStock() {
-		new Stock();
+		new StockModel();
 		Table table = StockEntries.getStockTableBoard().getBoardTable();
 		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 		
-		ArrayList<ArrayList<Object>> list = Stock.getData();
+		ArrayList<ArrayList<Object>> list = StockModel.getData();
 		for(ArrayList<Object> row: list) {
 			dtm.addRow(row.toArray());
 		}
 		
 		table.setTablemodel(dtm);
 		StockEntries.getStockTableBoard().setBoardTable(table);
-		StockEntries.getStockTableBoard().setBoardTableAdapter(Stock.getData());
+		StockEntries.getStockTableBoard().setBoardTableAdapter(StockModel.getData());
 	
 	}
 	
@@ -78,7 +78,7 @@ public class StockController implements ActionListener,CostantValues,Controller{
 		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 		dtm.setRowCount(0);
 	
-		Utility.database_thread = new Thread(Stock.fetchLowStock(qty));
+		Utility.database_thread = new Thread(StockModel.fetchLowStock(qty));
 		Utility.database_thread.start();
 		try {
 			Utility.database_thread.join();
@@ -86,10 +86,9 @@ public class StockController implements ActionListener,CostantValues,Controller{
 			e.printStackTrace();
 		}
 
-		ArrayList<ArrayList<Object>> data = Stock.getData();
+		ArrayList<ArrayList<Object>> data = StockModel.getData();
 		table.fillTable(data);
 	}
-	@Override
 	public void clearFields() {
 		StockEntries.getNamefield().setText("");
 		StockEntries.getSizefield().setText("");

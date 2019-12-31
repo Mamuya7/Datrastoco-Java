@@ -3,20 +3,37 @@ package model;
 import java.sql.*;
 import java.util.ArrayList;
 
-import data.Cash;
+import data.CashTransaction;
 
 public class CashBookModel implements Models{
 
 	private Connection con;
-	private Cash cash;
+	private CashTransaction cash;
 	
-	public CashBookModel(Cash cash2) {
-		this.cash = cash2;
+	public CashBookModel(CashTransaction cash) {
+		this.cash = cash;
 	}
 
 	@Override
-	public void insert() {
-		
+	public Runnable query() {
+		return ()->{
+			try {
+				con = DriverManager.getConnection(url,user,password);
+				PreparedStatement ps = con.prepareStatement(insert_cash);
+				ps.setString(1, cash.getTransaction() + " ("+ cash.getAssociate() +")");
+				ps.setDouble(2, cash.getDebit());
+				ps.setDouble(3,cash.getCredit());
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		};
 	}
 
 	public ArrayList<ArrayList<Object>> fetch() {

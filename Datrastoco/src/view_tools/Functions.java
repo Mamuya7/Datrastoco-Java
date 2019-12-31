@@ -46,4 +46,8 @@ public class Functions {
 		frame.add(main,BorderLayout.CENTER);
 		return frame;
 	}
+	
+	public static String currentDate() {
+		return null;
+	}
 }

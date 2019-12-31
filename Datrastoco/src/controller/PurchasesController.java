@@ -9,7 +9,7 @@ import javax.swing.JRadioButton;
 
 import dashboard.Dashboard;
 import dashboard.Utility;
-import data.Product;
+import data.ProductData;
 import model.Models;
 import model.PurchasesModel;
 import model.Search;
@@ -32,7 +32,7 @@ public class PurchasesController implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent avt) {
-		Product product = new Product(2);
+		ProductData product = new ProductData(2);
 		
 		if(avt.getSource() == button) {
 			new PurchasesModel(product);
@@ -49,7 +49,7 @@ public class PurchasesController implements ActionListener {
 						+ "", "Tatizo", JOptionPane.ERROR_MESSAGE);
 			}
 		}else if(avt.getSource() == defprice) {
-			double amount = Product.getBuyprice() * product.getQuantity();
+			double amount = ProductData.getBuyprice() * product.getQuantity();
 			PurchasesEntries.getPricefield().setText(amount);
 			PurchasesEntries.getPricefield().setEditable(false);
 		}else if(avt.getSource() == disprice) {
@@ -58,7 +58,8 @@ public class PurchasesController implements ActionListener {
 	}
 	
 	public static void load_purchases() {
-		Utility.database_thread = new Thread(Search.fetch(Models.purchases_data + Dashboard.getTheDate()+"%'"));
+		Search search = new Search();
+		Utility.database_thread = new Thread(search.fetch(Models.purchases_data + Dashboard.getTheDate()+"%'"));
 		Utility.database_thread.start();
 		try {
 			Utility.database_thread.join();
@@ -66,8 +67,8 @@ public class PurchasesController implements ActionListener {
 			e.printStackTrace();
 		}
 		PurchasesEntries.getPurchaseTableBoard().getBoardTable().fillTable(
-				Search.getTable_data());
-		PurchasesEntries.getPurchaseTableBoard().setBoardTableAdapter(Search.getTable_data());;
+				search.getTable_data());
+		PurchasesEntries.getPurchaseTableBoard().setBoardTableAdapter(search.getTable_data());;
 	}
 	private void clean_fields() {
 		PurchasesEntries.getNamefield().setText("");

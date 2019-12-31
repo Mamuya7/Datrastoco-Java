@@ -8,7 +8,7 @@ import javax.swing.*;
 import data.Draw;
 import model.DrawModel;
 
-public class DrawingController implements ActionListener, Controller {
+public class DrawingController implements ActionListener {
 
 	public DrawingController(JButton button) {
 		button.addActionListener(this);
@@ -18,16 +18,18 @@ public class DrawingController implements ActionListener, Controller {
 	public void actionPerformed(ActionEvent e) {
 		Draw draw = new Draw();
 		DrawModel drawmodel = new DrawModel(draw);
-		drawmodel.insert();
+		try {
+			Thread thread =  new Thread(drawmodel.query());
+			thread.start();
+			thread.join();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 		
 		if(drawmodel.isInserted()) {
 			JOptionPane.showMessageDialog(null, "Uchukuzi wa hela "
 					+ "kwa matumizi binafsi umehifadhiwa kikamilifu");
 			draw.clearFields();
 		}
-	}
-
-	@Override
-	public void clearFields() {
 	}
 }

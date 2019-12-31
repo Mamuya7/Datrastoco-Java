@@ -6,13 +6,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import dashboard.Utility;
-import data.Product;
+import data.ProductData;
 import model.Models;
 import model.PriceList;
 import model.Search;
 import views.PricelistEntries;
 
-public class PricelistController implements ActionListener,Controller {
+public class PricelistController implements ActionListener {
 	
 	public PricelistController(JButton save) {
 		save.addActionListener(this);
@@ -25,10 +25,10 @@ public class PricelistController implements ActionListener,Controller {
 		double buying = Double.valueOf(PricelistEntries.getBuyingPricefield().getText());
 		double selling = Double.valueOf(PricelistEntries.getSellingPricefield().getText());
 		
-		Product.fill(name, size, buying, selling);
-		Product.classify();
+		ProductData.fill(name, size, buying, selling);
+		ProductData.classify();
 		
-		new PriceList(Product.getInvoice_id(),Product.getBuyprice(),Product.getSellprice());
+		new PriceList(ProductData.getInvoice_id(),ProductData.getBuyprice(),ProductData.getSellprice());
 		
 		String[] rowData = {name,size,String.valueOf(buying),String.valueOf(selling)};
 		PricelistEntries.getTableBoard().getBoardTable().addData(rowData);
@@ -36,18 +36,18 @@ public class PricelistController implements ActionListener,Controller {
 	}
 
 	public static void loadPricelist() {
-		Utility.database_thread = new Thread(Search.fetch(Models.fetch_price_list));
+		Search search = new Search();
+		Utility.database_thread = new Thread(search.fetch(Models.fetch_price_list));
 		Utility.database_thread.start();
 		try {
 			Utility.database_thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		PricelistEntries.getTableBoard().getBoardTable().fillTable(Search.getTable_data());
-		PricelistEntries.getTableBoard().setBoardTableAdapter(Search.getTable_data());
+		PricelistEntries.getTableBoard().getBoardTable().fillTable(search.getTable_data());
+		PricelistEntries.getTableBoard().setBoardTableAdapter(search.getTable_data());
 	}
 
-	@Override
 	public void clearFields() {
 		PricelistEntries.getNamefield().setText("");
 		PricelistEntries.getSizefield().setText("");
