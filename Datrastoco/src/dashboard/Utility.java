@@ -1,13 +1,14 @@
 package dashboard;
 
 import controller.*;
+import model.SalesModel;
 
-public class Utility{
-	public static Thread database_thread;
+public abstract class Utility{
+	public static Thread fetch_database_thread;
 	public static Thread database_vice_thread;
-	private static Thread database_path;
+	private static Thread query_database_thread;
 	
-	public Utility() {
+	public static void init() {
 		SearchController.loadProductsData();
 		SalesController.initiateSales();
 		PurchasesController.load_purchases();
@@ -18,9 +19,20 @@ public class Utility{
 	
 	public static void queryDatabase(Runnable runnable) {
 		try {
-			database_path = new Thread(runnable);
-			database_path.start();
-			database_path.join();
+			query_database_thread = new Thread(runnable);
+			query_database_thread.setName("querydatabase_thread");
+			query_database_thread.start();
+			query_database_thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void fetchDatabase(Runnable runnable) {
+		try {
+			fetch_database_thread = new Thread(runnable);
+			fetch_database_thread.setName("fetchdatabase_thread");
+			fetch_database_thread.start();
+			fetch_database_thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

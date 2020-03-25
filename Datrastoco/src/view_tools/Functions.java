@@ -1,6 +1,7 @@
 package view_tools;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -44,10 +45,12 @@ public class Functions {
 		
 		frame.add(topInFrame,BorderLayout.NORTH);
 		frame.add(main,BorderLayout.CENTER);
+		
 		return frame;
 	}
 	
 	public static String currentDate() {
+		
 		return null;
 	}
 }

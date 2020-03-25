@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,8 +10,8 @@ import controller.SalesController;
 import controller.SearchController;
 import view_tools.*;
 
-public class SalesEntries extends JPanel {
-	private static final Title title = new Title("Mauzo Ya Siku");
+public class SalesView extends JPanel {
+	private static final Title title = new Title("Mauzo Ya Siku",Color.RED);
 	
 	private static final JLabel name = new JLabel("Product Name");
 	private static final JLabel price = new JLabel("Product Price");
@@ -38,7 +39,7 @@ public class SalesEntries extends JPanel {
 	
 	private static TableBoard salesTableBoard = new TableBoard(CostantValues.sales_columns);
 	
-	public SalesEntries() {
+	public SalesView() {
 		super();
 
 		new SalesController(save,post,defaultprice,discountprice);
@@ -175,7 +176,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setNamefield(JSearchField namefield) {
-		SalesEntries.namefield = namefield;
+		SalesView.namefield = namefield;
 	}
 
 
@@ -185,7 +186,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setPricefield(JNumberField pricefield) {
-		SalesEntries.pricefield = pricefield;
+		SalesView.pricefield = pricefield;
 	}
 
 
@@ -195,7 +196,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setQuantityfield(JNumberField quantityfield) {
-		SalesEntries.quantityfield = quantityfield;
+		SalesView.quantityfield = quantityfield;
 	}
 
 
@@ -205,7 +206,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setSizefield(JSearchField sizefield) {
-		SalesEntries.sizefield = sizefield;
+		SalesView.sizefield = sizefield;
 	}
 
 
@@ -215,7 +216,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setSalesTableBoard(TableBoard salesTableBoard) {
-		SalesEntries.salesTableBoard = salesTableBoard;
+		SalesView.salesTableBoard = salesTableBoard;
 	}
 
 
@@ -225,7 +226,7 @@ public class SalesEntries extends JPanel {
 
 
 	public static void setPaymentType(JComboBox<String> paymentType) {
-		SalesEntries.paymentType = paymentType;
+		SalesView.paymentType = paymentType;
 	}
 
 	public static JButton getPost() {
@@ -233,7 +234,7 @@ public class SalesEntries extends JPanel {
 	}
 
 	public static void setPost(JButton post) {
-		SalesEntries.post = post;
+		SalesView.post = post;
 	}
 
 	public static JButton getSave() {
@@ -241,6 +242,6 @@ public class SalesEntries extends JPanel {
 	}
 
 	public static void setSave(JButton save) {
-		SalesEntries.save = save;
+		SalesView.save = save;
 	}
 }

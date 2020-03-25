@@ -12,7 +12,7 @@ import data.SalesData;
 import model.Models;
 import model.SalesModel;
 import model.Search;
-import views.SalesEntries;
+import views.SalesView;
 
 public class SalesController implements ActionListener{
 	private static int id = 0;
@@ -22,7 +22,7 @@ public class SalesController implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent avt) {
-		if(avt.getSource() == SalesEntries.getPost()) {
+		if(avt.getSource() == SalesView.getPost()) {
 			String date = Dashboard.getTheDate();
 			
 			if(date == null || date == "") {
@@ -31,9 +31,9 @@ public class SalesController implements ActionListener{
 			date += "%'";
 			Search.fetchTotal(Models.cash_sales + date);
 			double value = Search.getTotal();
-			SalesModel.post(value);
+			SalesModel.poster(value);
 		}
-		if(avt.getSource() == SalesEntries.getSave()) {
+		if(avt.getSource() == SalesView.getSave()) {
 			SalesData salesdata = new SalesData();
 			SalesModel salesmodel;
 			
@@ -54,13 +54,18 @@ public class SalesController implements ActionListener{
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
+				if(salesmodel.getEffect() == 0) {
+					JOptionPane.showMessageDialog(null, "Idadi ya bidhaa unayojaribu "
+							+ "kuuza ni nyingi kuliko zilizopo");
+				}
 				
-				String[] rowData = {salesdata.getProdName(),
+				String[] rowData = {
+						salesdata.getProdName(),
 						salesdata.getProdSize(),
 						String.valueOf(salesdata.getQuantity()),
 						String.valueOf(salesdata.getAmount())};
 				
-				SalesEntries.getSalesTableBoard().getBoardTable().addData(rowData);
+				SalesView.getSalesTableBoard().getBoardTable().addData(rowData);
 				salesdata.clearFields();
 			}
 		}
@@ -68,15 +73,13 @@ public class SalesController implements ActionListener{
 	}
 	
 	public static void initiateSales() {
-		Utility.database_thread = new Thread(SalesModel.loadSales());
-		Utility.database_thread.start();
-		try {
-			Utility.database_thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		SalesEntries.getSalesTableBoard().getBoardTable().fillTable(SalesModel.getData());
-		SalesEntries.getSalesTableBoard().setBoardTableAdapter(SalesModel.getData());
+		SalesModel model = new SalesModel();
+		
+		Utility.queryDatabase(model.post());
+		Utility.fetchDatabase(SalesModel.loadSales());
+		
+		SalesView.getSalesTableBoard().getBoardTable().fillTable(SalesModel.getData());
+		SalesView.getSalesTableBoard().setBoardTableAdapter(SalesModel.getData());
 	}
 	public static int getId() {
 		return id;
@@ -86,14 +89,14 @@ public class SalesController implements ActionListener{
 	}
 	public void clearFields() {
 		
-		SalesEntries.getNamefield().setText("");
-		SalesEntries.getSizefield().setText("");
-		SalesEntries.getQuantityfield().setText("");
-		SalesEntries.getPricefield().setText("");
+		SalesView.getNamefield().setText("");
+		SalesView.getSizefield().setText("");
+		SalesView.getQuantityfield().setText("");
+		SalesView.getPricefield().setText("");
 		
-		SalesEntries.getPaymentType().setSelectedIndex(0);
+		SalesView.getPaymentType().setSelectedIndex(0);
 		
-		SalesEntries.getQuantityfield().setScreenText("");
-		SalesEntries.getPricefield().setScreenText("");
+		SalesView.getQuantityfield().setScreenText("");
+		SalesView.getPricefield().setScreenText("");
 	}
 }

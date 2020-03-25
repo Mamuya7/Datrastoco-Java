@@ -37,4 +37,16 @@ public class Account implements Models {
 			
 		};
 	}
+
+	@Override
+	public Runnable insert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable update() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

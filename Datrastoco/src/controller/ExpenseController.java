@@ -24,7 +24,7 @@ public class ExpenseController implements ActionListener {
 				ExpenseView.getAmount().getTextInDouble()
 				);
 		
-		Utility.database_thread = new Thread(new Runnable(){
+		Utility.fetch_database_thread = new Thread(new Runnable(){
 
 			@Override
 			public void run() {
@@ -33,9 +33,9 @@ public class ExpenseController implements ActionListener {
 			
 		});
 		
-		Utility.database_thread.start();
+		Utility.fetch_database_thread.start();
 		try {
-			Utility.database_thread.join();
+			Utility.fetch_database_thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +60,7 @@ public class ExpenseController implements ActionListener {
 		ExpenseView.getAmount().setText(0);
 	}
 	public static void loadExpenses() {
-		Utility.database_thread = new Thread(
+		Utility.fetch_database_thread = new Thread(
 				new Runnable() {
 					@Override
 					public void run() {
@@ -69,9 +69,9 @@ public class ExpenseController implements ActionListener {
 					}
 					
 				});
-		Utility.database_thread.start();
+		Utility.fetch_database_thread.start();
 		try {
-			Utility.database_thread.join();
+			Utility.fetch_database_thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

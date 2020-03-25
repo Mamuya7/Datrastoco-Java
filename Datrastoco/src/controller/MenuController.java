@@ -27,7 +27,7 @@ public class MenuController implements ActionListener,CostantValues {
 		}else if(evt.getSource() == SellerNavigator.getDrawings()) {
 			card.show(Dashboard.getCard(),DRAWINGVIEW);
 		}else if(evt.getSource() == SellerNavigator.getNewStock()) {
-			card.show(Dashboard.getCard(),STOCKMODULE);
+			card.show(Dashboard.getCard(),STOCKLIST);
 		}else if(evt.getSource() == SellerNavigator.getPricelist()) {
 			card.show(Dashboard.getCard(), PRICELISTMODULE);
 		}else if(evt.getSource() == SellerNavigator.getLowStock()) {
@@ -39,6 +39,8 @@ public class MenuController implements ActionListener,CostantValues {
 			card.show(Dashboard.getCard(), POST_VIEW);
 		}else if(evt.getSource() == SellerNavigator.getCashbook()) {
 			card.show(Dashboard.getCard(), CASHBOOKVIEW);
+		}else if(evt.getSource() == SellerNavigator.getProduct()) {
+			card.show(Dashboard.getCard(), PRODUCTVIEW);
 		}
 	}
 

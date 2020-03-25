@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.*;
 
@@ -9,6 +10,8 @@ import controller.SearchController;
 import view_tools.*;
 
 public class CashBookView extends JPanel{
+	private static final Title title = new Title("CashBook",Color.GREEN);
+	
 	private static final JLabel cashlabel = new JLabel("CASH SUMMARY OF:");
 	private static final JLabel transactionlabel = new JLabel("Transaction");
 	private static final JLabel associatelabel = new JLabel("Associate");
@@ -43,9 +46,15 @@ public class CashBookView extends JPanel{
 		arranger.add(filterpane,BorderLayout.NORTH);
 		arranger.add(cashflow_entrypane,BorderLayout.CENTER);
 		
-		add(entries,BorderLayout.WEST);
-		add(cashTableBoard,BorderLayout.CENTER);
+		JPanel main = new JPanel(new BorderLayout());
+		main.add(entries,BorderLayout.WEST);
+		main.add(cashTableBoard,BorderLayout.CENTER);
+		
+		JPanel topPanel = Functions.alignTitleTopCenter(title, main);
+		add(topPanel,BorderLayout.NORTH);
+		add(main,BorderLayout.CENTER);
 	}
+	
 	private static JPanel createFilterPanel() {
 		JPanel panel = new JPanel();
 		GroupLayout grp =  new GroupLayout(panel);

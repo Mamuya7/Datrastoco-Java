@@ -7,22 +7,27 @@ import javax.swing.JOptionPane;
 
 import dashboard.Dashboard;
 import data.Debtor;
-import data.ProductData;
 import data.SalesData;
+import database_contract.Database;
 
 public class SalesModel implements Models{
 	private static Connection con = null;
 	private static ArrayList<ArrayList<Object>> data = new ArrayList<>();
 	private Debtor debtor;
-	private ProductData product;
 	private SalesData salesdata;
+	private int effect = 0;
 
 	public SalesModel(Debtor debtor2) {
 		setDebtor(debtor2);
+		setSalesdata(debtor2.getSalesdata());
 	}
 
 	public SalesModel(SalesData salesdata) {
 		this.setSalesdata(salesdata);
+	}
+
+	public SalesModel() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public static Runnable loadSales() {
@@ -31,24 +36,24 @@ public class SalesModel implements Models{
 			try {
 				con = DriverManager.getConnection(url,user,password);
 				Statement statmnt = con.createStatement();
-				rs = statmnt.executeQuery(all_sales + Dashboard.getTheDate() + "%'");
-				Integer count = 0;
+				rs = statmnt.executeQuery(fetch_sales);
+				Integer count = 0;System.out.println(fetch_sales);
 				while(rs.next()) {
 					ArrayList<Object> list = new ArrayList<>();
 					list.add(++count);
-					list.add(rs.getString("prod_name"));
-					list.add(rs.getString("prod_size"));
-					list.add(String.valueOf(rs.getInt("quantity")));
-					list.add(rs.getString("price"));
-					list.add(rs.getString("date"));
-					data.add(list);
+					list.add(rs.getString(Database.Stock.PRODUCT_NAME));
+					list.add(rs.getString(Database.Stock.PRODUCT_SIZE));
+					list.add(String.valueOf(rs.getDouble(Database.SalesLedger.QUANTITY)));
+					list.add(String.valueOf(rs.getDouble(Database.SalesLedger.AMOUNT)));
+					list.add(rs.getString(Database.SalesLedger.DATE));
+					data.add(list);System.out.println(list + "here2");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}			
 		};
 	}
-	public static void post(double amount) {
+	public static void poster(double amount) {
 		try {
 			con = DriverManager.getConnection(url, user, password);
 			PreparedStatement ps = con.prepareStatement(insert_cash);
@@ -73,7 +78,6 @@ public class SalesModel implements Models{
 	@Override
 	public Runnable query() {
 		return ()->{
-			
 			try {
 				con = DriverManager.getConnection(url,user,password);
 				con.setAutoCommit(false);
@@ -85,7 +89,7 @@ public class SalesModel implements Models{
 				ps.setInt(4,salesdata.getPayment());
 				int effect = ps.executeUpdate();
 				
-				ps = con.prepareStatement(decrease_stock_quantity);
+				ps = con.prepareStatement(update_stock_on_sale);
 				ps.setDouble(1,salesdata.getQuantity());
 				ps.setInt(2, salesdata.getProdId());
 				ps.setDouble(3, salesdata.getQuantity());
@@ -101,22 +105,20 @@ public class SalesModel implements Models{
 					
 					effect *= ps.executeUpdate();
 				}
-				
+				setEffect(effect);
 				if(effect == 0) {
-					JOptionPane.showMessageDialog(null, "Idadi ya bidhaa unayojaribu "
-							+ "kuuza ni nyingi kuliko zilizopo");
 					con.rollback();
 				}else {
 					con.commit();
 				}
 				
 			} catch (SQLException e) {
+				e.printStackTrace();
 				try {
 					con.rollback();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-				e.printStackTrace();
 			}finally {
 				try {
 					con.close();
@@ -127,13 +129,34 @@ public class SalesModel implements Models{
 		};
 	}
 
+	public Runnable post() {
+		return ()->{
+			try {
+				con = DriverManager.getConnection(url, user, password);
+				PreparedStatement ps = con.prepareStatement(fetch_sales_account);
+				ResultSet rs = ps.executeQuery();
+				if(!(rs.next())) {
+					ps = con.prepareStatement(insert_new_sales_account_date);
+					ps.setDouble(1, 0);
+					ps.executeUpdate();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		};
+	}
 	public static ArrayList<ArrayList<Object>> getData() {
 		return data;
 	}
 	
-	public void setProduct(ProductData product) {
-		this.product = product;
-	}
 	public void setDebtor(Debtor debtor) {
 		this.debtor = debtor;
 	}
@@ -144,5 +167,25 @@ public class SalesModel implements Models{
 
 	public void setSalesdata(SalesData salesdata) {
 		this.salesdata = salesdata;
+	}
+
+	public int getEffect() {
+		return effect;
+	}
+
+	public void setEffect(int effect) {
+		this.effect = effect;
+	}
+
+	@Override
+	public Runnable insert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable update() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

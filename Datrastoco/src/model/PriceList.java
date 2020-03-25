@@ -8,33 +8,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import data.ProductData;
+
 public class PriceList implements Models {
 	private static Connection con = null;
 	private static ArrayList<ArrayList<Object>> data = new ArrayList<>();
+	private ProductData productdata;
 	
-	public PriceList() {
-		
+	public PriceList(ProductData productdata) {
+		this.productdata = productdata;
 	}
 	
 	public PriceList(int invoice_id, double buyprice, double sellprice) {
-		try {
-			con = DriverManager.getConnection(url,user,password);
-			
-			PreparedStatement ps = con.prepareStatement(update_invoice);
-			ps.setDouble(1,buyprice);
-			ps.setDouble(2,sellprice);
-			ps.setInt(3,invoice_id);
-			ps.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public static void InvoiceList() {
@@ -73,7 +58,36 @@ public class PriceList implements Models {
 	@Override
 	public Runnable query() {
 		return ()->{
-			
+			try {
+				con = DriverManager.getConnection(url,user,password);
+				
+				PreparedStatement ps = con.prepareStatement(update_stock_prices);
+//				ps.setDouble(1,productdata.getBuyingPrice());
+//				ps.setDouble(2,productdata.getSellingPrice());
+				ps.setInt(3,productdata.getProdId());
+				ps.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		};
+	}
+
+	@Override
+	public Runnable insert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable update() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

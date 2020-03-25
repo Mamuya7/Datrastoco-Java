@@ -43,9 +43,14 @@ public class CashTransaction implements DataInterface{
 		CashBookView.getAmountField().setText("");
 		CashBookView.getAmountField().setScreenText("");
 	}
+
 	@Override
-	public void validateFields() {
-		
+	public boolean validateFields() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void updateTable(boolean result) {
 	}
 	public String getDate() {
 		return date;

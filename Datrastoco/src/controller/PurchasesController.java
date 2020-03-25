@@ -10,6 +10,7 @@ import javax.swing.JRadioButton;
 import dashboard.Dashboard;
 import dashboard.Utility;
 import data.ProductData;
+import data.PurchaseData;
 import model.Models;
 import model.PurchasesModel;
 import model.Search;
@@ -32,54 +33,52 @@ public class PurchasesController implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent avt) {
-		ProductData product = new ProductData(2);
 		
 		if(avt.getSource() == button) {
-			new PurchasesModel(product);
-			if(PurchasesModel.getAffected() > 0) {
-				String[] rowData = {product.getName(),product.getSize(),
-						String.valueOf(product.getQuantity()),String.valueOf(product.getAmount())};
+			PurchaseData purchasedata = new PurchaseData();
+			PurchasesModel purchasemodel = new PurchasesModel(purchasedata);
+			
+			try {
+				Thread thread =  new Thread(purchasemodel.query());
+				thread.setName("purchases thread");
+				thread.start();
+				thread.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+			if(purchasemodel.getAffected() > 0) {
+				String[] rowData = {purchasedata.getProdName(),purchasedata.getProdSize(),
+						String.valueOf(purchasedata.getQuantity()),
+						String.valueOf(purchasedata.getAmount())};
+				
 				PurchasesEntries.getPurchaseTableBoard().getBoardTable().addData(rowData);
-				clean_fields();
-				JOptionPane.showMessageDialog(null, "Manunuzi ya " + product.getName() + " yamehifadhiwa.",
-						"Matokeo",JOptionPane.INFORMATION_MESSAGE);;
+				
+				purchasedata.clearFields();
+				JOptionPane.showMessageDialog(null, "Manunuzi ya " + purchasedata.getProdName()
+				+ " yamehifadhiwa.","Matokeo",JOptionPane.INFORMATION_MESSAGE);
 			}else {
 				JOptionPane.showMessageDialog(null, "Samahan! Kuna tatizo limejitokeza, "
 						+ "tunaomba rudia kuingiza rekodi hii kwa uangalifu zaidi. Karibu!!"
 						+ "", "Tatizo", JOptionPane.ERROR_MESSAGE);
 			}
 		}else if(avt.getSource() == defprice) {
-			double amount = ProductData.getBuyprice() * product.getQuantity();
-			PurchasesEntries.getPricefield().setText(amount);
-			PurchasesEntries.getPricefield().setEditable(false);
+			
 		}else if(avt.getSource() == disprice) {
-			PurchasesEntries.getPricefield().setEditable(true);
+			
 		}
 	}
 	
 	public static void load_purchases() {
 		Search search = new Search();
-		Utility.database_thread = new Thread(search.fetch(Models.purchases_data + Dashboard.getTheDate()+"%'"));
-		Utility.database_thread.start();
-		try {
-			Utility.database_thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		PurchasesModel model = new PurchasesModel();
+		
+		Utility.fetchDatabase(search.fetch(Models.purchases_data + Dashboard.getTheDate()+"%'"));
+		Utility.queryDatabase(model.post());
+		
 		PurchasesEntries.getPurchaseTableBoard().getBoardTable().fillTable(
 				search.getTable_data());
 		PurchasesEntries.getPurchaseTableBoard().setBoardTableAdapter(search.getTable_data());;
-	}
-	private void clean_fields() {
-		PurchasesEntries.getNamefield().setText("");
-		PurchasesEntries.getPricefield().setText("");
-		PurchasesEntries.getQuantityfield().setText("");
-		PurchasesEntries.getSizefield().setText("");
-		PurchasesEntries.getDiscountprice().setSelected(true);
-		PurchasesEntries.getPricefield().setEditable(true);
-		
-		PurchasesEntries.getPricefield().setScreenText("");
-		PurchasesEntries.getQuantityfield().setScreenText("");
 	}
 	
 

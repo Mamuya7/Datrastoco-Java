@@ -12,7 +12,10 @@ public class JNumberField extends JTextField implements KeyListener {
 		super();
 		addKeyListener(this);
 	}
-
+	public JNumberField(int size) {
+		super(size);
+		addKeyListener(this);
+	}
 	@Override
 	public void keyPressed(KeyEvent kvt) {
 		char c = kvt.getKeyChar();

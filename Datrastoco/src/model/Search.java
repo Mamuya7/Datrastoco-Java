@@ -3,6 +3,7 @@ package model;
 import java.sql.*;
 import java.util.ArrayList;
 import data.ProductData;
+import data.StockData;
 import database_contract.Database.Stock;
 
 public class Search implements Models{
@@ -18,20 +19,25 @@ public class Search implements Models{
 				Statement stmnt = con.createStatement();
 				ResultSet rs = stmnt.executeQuery(fetch_stock);
 				
-				ArrayList<ProductData> product = new ArrayList<ProductData>();
+				ArrayList<StockData> products = new ArrayList<StockData>();
 				while(rs.next()) {
-					ProductData productData = new ProductData(
+					ProductData productdata = new ProductData(
 							rs.getInt(Stock.PRODUCT_ID),
 							rs.getString(Stock.PRODUCT_NAME),
 							rs.getString(Stock.PRODUCT_SIZE),
-							rs.getDouble(Stock.PRODUCT_QUANTITY),
+							rs.getString(Stock.PRODUCT_CATEGORY),
+							rs.getString(Stock.PRODUCT_COMPANY),
+							rs.getDouble(Stock.PRODUCT_QUANTITY)
+							);
+					StockData stockData = new StockData(
+							productdata,
 							rs.getDouble(Stock.BUYING_PRICE),
 							rs.getDouble(Stock.SELLING_PRICE),
 							rs.getDouble(Stock.AMOUNT)
 							);
-					product.add(productData);
+					products.add(stockData);
 				}
-				ProductData.setProduct(product);
+				StockData.setProducts(products);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -150,5 +156,17 @@ public class Search implements Models{
 		return ()->{
 			
 		};
+	}
+
+	@Override
+	public Runnable insert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Runnable update() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

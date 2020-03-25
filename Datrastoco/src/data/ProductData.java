@@ -1,45 +1,85 @@
 package data;
 
-import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import views.StockEntries;
 
-public class ProductData {
-	public static ArrayList<ProductData> products = new ArrayList<ProductData>();
+public class ProductData implements DataInterface{
 	
-	private int id;
+	private int prodId;
 	private String prodName;
 	private String prodSize;
-	private double quantity;
-	private double buyingPrice;
-	private double sellingPrice;
-	private double amount;
+	private String size;
+	private String prodUnits;
+	private String prodCategory;
+	private String prodCompany;
+	private double quantity = 0;
 
 	public ProductData() {
 	}
+
+
+	public ProductData(int prodId, String prodName, String prodSize, String prodCategory, String prodCompany,
+			double quantity) {
+		this.prodId = prodId;
+		this.prodName = prodName;
+		this.prodSize = prodSize;
+		this.prodCategory = prodCategory;
+		this.prodCompany = prodCompany;
+		this.quantity = quantity;
+	}
+
+	public void initProduct() {
+		setSize(StockEntries.getSizefield().getText());
+		setProdUnits(StockEntries.getSizetype().getSelectedItem().toString());
+		
+		setProdName(StockEntries.getNamefield().getText().toUpperCase());
+		setProdSize(getSize() + getProdUnits());
+		setQuantity(StockEntries.getQuantityfield().getTextInDouble());
+		setProdCategory(StockEntries.getCategoryfield().getText().toUpperCase());
+		setProdCompany(StockEntries.getCompanyfield().getText().toUpperCase());
+	}
 	
-	public ProductData(int id, String prodName, String prodSize, double quantity, double buyingPrice, double sellingPrice, double amount) {
-		setId(id);
-		setProdName(prodName);
-		setProdSize(prodSize);
-		setQuantity(quantity);
-		setBuyingPrice(buyingPrice);
-		setSellingPrice(sellingPrice);
-		setAmount(amount);
+	@Override
+	public void clearFields() {
+		StockEntries.getNamefield().setText("");
+		StockEntries.getSizefield().setText("");
+		StockEntries.getQuantityfield().setText("");
+		StockEntries.getSizetype().setSelectedIndex(0);
+		StockEntries.getCompanyfield().setText("");
+		StockEntries.getCategoryfield().setText("");
+		StockEntries.getQuantityfield().setScreenText("");
+	}
+
+	@Override
+	public boolean validateFields() {
+		boolean status = false;
+		if((this.prodName.length() == 0) || (this.size.length() == 0)) {
+			status = false;
+		}else {
+			if(this.prodCategory.length() == 0)
+				setProdCategory("none");
+			if(this.prodCompany.length() == 0)
+				setProdCompany("none");
+			status = true;
+		}
+		return status;
+	}
+	@Override
+	public void updateTable(boolean result) {
+		if(result) {
+			JOptionPane.showMessageDialog(null, "bidhaa mpya " 
+		+ getProdName() + " ya " + getProdSize() + " imerekodiwa");
+		}else {
+			JOptionPane.showMessageDialog(null, "Bidhaa haijarekodiwa, rudia kurekodi tena!");
+		}
 	}
 	
-	public int getId() {
-		return id;
+	public int getProdId() {
+		return prodId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public static ArrayList<ProductData> getProduct() {
-		return products;
-	}
-
-	public static void setProduct(ArrayList<ProductData> product) {
-		ProductData.products = product;
+	public void setProdId(int id) {
+		this.prodId = id;
 	}
 
 	public String getProdName() {
@@ -65,28 +105,41 @@ public class ProductData {
 	public void setQuantity(double quantity) {
 		this.quantity = quantity;
 	}
-
-	public double getBuyingPrice() {
-		return buyingPrice;
+	public String getProdCategory() {
+		return prodCategory;
 	}
 
-	public void setBuyingPrice(double buyingPrice) {
-		this.buyingPrice = buyingPrice;
+	public void setProdCategory(String prodCategory) {
+		this.prodCategory = prodCategory;
 	}
 
-	public double getSellingPrice() {
-		return sellingPrice;
+	public String getProdCompany() {
+		return prodCompany;
 	}
 
-	public void setSellingPrice(double sellingPrice) {
-		this.sellingPrice = sellingPrice;
+	public void setProdCompany(String prodCompany) {
+		this.prodCompany = prodCompany;
 	}
 
-	public double getAmount() {
-		return amount;
+
+	public String getProdUnits() {
+		return prodUnits;
 	}
 
-	public void setAmount(double amount) {
-		this.amount = amount;
+
+	public void setProdUnits(String prodUnits) {
+		this.prodUnits = prodUnits;
 	}
+
+
+	public String getSize() {
+		return size;
+	}
+
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+
 }

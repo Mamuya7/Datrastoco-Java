@@ -11,8 +11,12 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 	private static JMenu cash_flow = new JMenu("CashFlow");
 	private static JMenu accounts = new JMenu("Accounts");
 	private static JMenu stock = new JMenu("Stock Control");
+	private static JMenu registration = new JMenu("Registration");
 	
 	private static JMenuItem post = new JMenuItem("Post");
+	
+	private static JMenuItem user = new JMenuItem("User Registration");
+	private static JMenuItem product = new JMenuItem("Product Registration");
 	
 	private static JMenuItem sales = new JMenuItem("Sales");
 	private static JMenuItem purchases = new JMenuItem("Purchases");
@@ -23,7 +27,7 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 	private static JMenuItem direct_expenses = new JMenuItem("Direct Expenses");
 	private static JMenuItem ind_expenses = new JMenuItem("Indirect Expenses");
 	
-	private static JMenuItem newstock = new JMenuItem("New Stock");
+	private static JMenuItem stocklist = new JMenuItem("Stock List");
 	private static JMenuItem lowstock = new JMenuItem("Low Stock");
 	
 	public SellerNavigator() {
@@ -32,30 +36,33 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 		add(cashFlowItems());
 		add(accountItems());
 		add(stockItems());
+		add(registrationItems());
 		initializeCardView();
 	}
 
 	private void initializeCardView() {
 		Dashboard.getCard().removeAll();
-		Dashboard.getCard().add(SALESMODULE,new SalesEntries());
+		Dashboard.getCard().add(SALESMODULE,new SalesView());
 		Dashboard.getCard().add(PURCHASESMODULE,new PurchasesEntries());
-		Dashboard.getCard().add(STOCKMODULE,new StockEntries());
+		Dashboard.getCard().add(STOCKLIST,new StockListView());
 		Dashboard.getCard().add(PRICELISTMODULE,new PricelistEntries());
 		Dashboard.getCard().add(LOWSTOCKMODULE, new LowStock());
 		Dashboard.getCard().add(INDIRECTEXPENSES, new ExpenseView());
-		Dashboard.getCard().add(POST_VIEW, new AccountsView());
+//		Dashboard.getCard().add(POST_VIEW, new AccountsView());
 		Dashboard.getCard().add(DRAWINGVIEW, new DrawingView());
 		Dashboard.getCard().add(CASHBOOKVIEW,new CashBookView());
 		Dashboard.getCard().add(DEBTORSVIEW,new DebtorsView());
+		Dashboard.getCard().add(USERVIEW,new UserView());
+		Dashboard.getCard().add(PRODUCTVIEW,new StockEntries());
 	}
 	
 	private JMenu stockItems() {
-		new MenuController(newstock);
+		new MenuController(stocklist);
 		new MenuController(pricelist);
 		new MenuController(lowstock);
 		
-		stock.add(newstock);
-		stock.add(pricelist);
+		stock.add(stocklist);
+//		stock.add(pricelist);
 		stock.add(lowstock );
 		
 		return stock;
@@ -85,10 +92,17 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 	private JMenu accountItems() {
 		new MenuController(post);
 		
-		accounts.add(post);
+//		accounts.add(post);
 		return accounts;
 	}
-
+	private JMenu registrationItems() {
+		new MenuController(user);
+		new MenuController(product);
+		
+		registration.add(user);
+		registration.add(product);
+		return registration;
+	}
 	public static JMenuItem getSales() {
 		return sales;
 	}
@@ -106,7 +120,7 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 	}
 
 	public static JMenuItem getNewStock() {
-		return newstock;
+		return stocklist;
 	}
 
 	public static JMenuItem getPricelist() {
@@ -139,6 +153,14 @@ public class SellerNavigator extends JMenuBar implements CostantValues {
 
 	public static void setDirect_expenses(JMenuItem direct_expenses) {
 		SellerNavigator.direct_expenses = direct_expenses;
+	}
+
+	public static JMenuItem getProduct() {
+		return product;
+	}
+
+	public static void setProduct(JMenuItem product) {
+		SellerNavigator.product = product;
 	}
 
 }

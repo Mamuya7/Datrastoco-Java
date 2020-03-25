@@ -1,5 +1,6 @@
 package view_tools;
 
+import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.Icon;
@@ -34,7 +35,12 @@ public class Title extends JLabel {
 
 	public Title(String text) {
 		super(text);
-		setFont(new Font("San serif",Font.PLAIN,16));
+		setFont(new Font("San serif",Font.PLAIN,18));
+	}
+	
+	public Title(String text, Color color) {
+		this(text);
+		setForeground(color);
 	}
 
 }

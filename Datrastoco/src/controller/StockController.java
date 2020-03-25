@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dashboard.Utility;
+import data.ProductData;
+import data.StockData;
 import model.Search;
 import model.StockModel;
 import view_tools.CostantValues;
@@ -17,6 +19,7 @@ import view_tools.Table;
 import view_tools.TableBoard;
 import views.LowStock;
 import views.StockEntries;
+import views.StockListView;
 
 public class StockController implements ActionListener,CostantValues{
 	private JButton button;
@@ -36,18 +39,25 @@ public class StockController implements ActionListener,CostantValues{
 	public void actionPerformed(ActionEvent evt) {
 
 		if(evt.getSource() == button) {
-			String prod_name = StockEntries.getNamefield().getText();
-			String prod_size = StockEntries.getSizefield().getText();
-			String sizetype = StockEntries.getSizetype().getSelectedItem().toString();
-			if((prod_name.length() == 0) || (prod_size.length() == 0) || (sizetype.length() == 0)) {
+			ProductData productdata = new ProductData();
+			productdata.initProduct();
+			
+			if(!productdata.validateFields()) {
 				JOptionPane.showMessageDialog(null, "All fields must be field to register a new product");
-			}else {
-				prod_size += sizetype;
-				new StockModel(prod_name.toUpperCase(),prod_size,0);
-				String[] rowData = {prod_name.toUpperCase(),prod_size,""};
-				StockEntries.getStockTableBoard().getBoardTable().addData(rowData);
+			}
+			else {
+				StockModel stockmodel = new StockModel(productdata);
 				
-				clearFields();
+				try {
+					Thread thread = new Thread(stockmodel.insert());
+					thread.start();
+					thread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				productdata.updateTable(stockmodel.isInserted());
+				productdata.clearFields();
 			}
 		}else if(evt.getSource() == combo) {
 			qty = (Integer) combo.getSelectedItem();
@@ -57,18 +67,31 @@ public class StockController implements ActionListener,CostantValues{
 	}
 	
 	public static void initiateStock() {
-		new StockModel();
-		Table table = StockEntries.getStockTableBoard().getBoardTable();
+		StockModel stm = new StockModel();
+		Utility.fetchDatabase(stm.query());
+		
+		Table table = StockListView.getStockTableBoard().getBoardTable();
 		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 		
-		ArrayList<ArrayList<Object>> list = StockModel.getData();
-		for(ArrayList<Object> row: list) {
-			dtm.addRow(row.toArray());
+		ArrayList<StockData> prodlist = StockData.getProducts();
+		for(StockData product: prodlist) {
+			Object[] row = {
+				product.getProdId(),
+				product.getProdName(),
+				product.getProdSize(),
+				product.getProdCategory(),
+				product.getProdCompany(),
+				product.getQuantity(),
+				product.getBuyingPrice(),
+				product.getSellingPrice(),
+				product.getAmount()
+			};
+			dtm.addRow(row);
 		}
 		
 		table.setTablemodel(dtm);
-		StockEntries.getStockTableBoard().setBoardTable(table);
-		StockEntries.getStockTableBoard().setBoardTableAdapter(StockModel.getData());
+		StockListView.getStockTableBoard().setBoardTable(table);
+		StockListView.getStockTableBoard().setBoardTableAdapter(StockModel.getData());
 	
 	}
 	
@@ -78,24 +101,16 @@ public class StockController implements ActionListener,CostantValues{
 		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 		dtm.setRowCount(0);
 	
-		Utility.database_thread = new Thread(StockModel.fetchLowStock(qty));
-		Utility.database_thread.start();
+		Utility.fetch_database_thread = new Thread(StockModel.fetchLowStock(qty));
+		Utility.fetch_database_thread.start();
 		try {
-			Utility.database_thread.join();
+			Utility.fetch_database_thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		ArrayList<ArrayList<Object>> data = StockModel.getData();
 		table.fillTable(data);
-	}
-	public void clearFields() {
-		StockEntries.getNamefield().setText("");
-		StockEntries.getSizefield().setText("");
-		StockEntries.getQuantityfield().setText("");
-		StockEntries.getSizetype().setSelectedIndex(0);
-		
-		StockEntries.getQuantityfield().setScreenText("");
 	}
 
 }

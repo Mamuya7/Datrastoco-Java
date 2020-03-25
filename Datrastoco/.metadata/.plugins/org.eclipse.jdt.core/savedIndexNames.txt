@@ -1,4 +1,4 @@
-INDEX VERSION 1.131+F:\LearnTrainDevelop\JavaWork\Datrastoco\.metadata\.plugins\org.eclipse.jdt.core
+INDEX VERSION 1.131+F:\LearnTrainDevelop\JavaWork\datrastoco\.metadata\.plugins\org.eclipse.jdt.core
 1832949699.index
 3454125809.index
 1028199574.index

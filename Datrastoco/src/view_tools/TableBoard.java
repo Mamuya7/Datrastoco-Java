@@ -46,7 +46,12 @@ public class TableBoard extends JPanel implements KeyListener,FocusListener{
 
 							Double columnTotal = 0.0;
 							for(; row >= 0; --row) {
-								columnTotal = columnTotal + new Double(dtm.getValueAt(row, col).toString());
+								double val = 0;
+								if(dtm.getValueAt(row, col) == null) {
+									columnTotal = columnTotal + new Double(val);
+								}else {
+									columnTotal = columnTotal + new Double(dtm.getValueAt(row, col).toString());
+								}
 							}
 							setTotal(columnTotal);
 							footer.getModel().setValueAt(columnTotal, 0, col);
